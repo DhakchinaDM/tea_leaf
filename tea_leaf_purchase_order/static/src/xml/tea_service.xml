@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="tea_leaf_purchase_order.OdooServices" owl="1">
+        <div class="o_content" style="background-image: url('/tea_leaf_purchase_order/static/img/img.png');
+                 background-size: cover;
+                 background-position: center;
+                 background-repeat: no-repeat;
+                 min-height: 100vh; /* Enable full page scrolling */
+                 overflow-y: auto; /* Allow scrolling */
+                 height: 100vh;
+                 padding:50px;
+                 position: relative;">
+            <div class="container" align="center">
+                <h1>SRI KANNIMARI AMMAN</h1>
+                <br/>
+                <h2>SMALL TEA LEAF GROWERS - KAMMANDU</h2>
+            </div>
+            <div class="container">
+                <h2>Select a Partner</h2>
+                <select class="form-control" t-on-change="onPartnerChange" style="color: white;">
+                    <option value="" style="color: black; background-color: white;">-- Select a Partner --</option>
+                    <t t-foreach="state.partners" t-as="partner" t-key="partner.id">
+                        <option t-att-value="partner.id" t-esc="partner.name"
+                                style="color: black; background-color: white;"></option>
+                    </t>
+                </select>
+                <br/>
+            </div>
+
+            <div class="container">
+ <table class="table table-bordered" style="background-color: rgba(255,255,255,0.8);">
+                <thead align="center">
+                    <tr style="color:black;">
+                        <th>TKN No</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Tare</th>
+                        <th>Nett</th>
+                    </tr>
+                </thead>
+     <tbody>
+                    <t t-foreach="state.orderLines" t-as="line" t-key="line.id">
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control"
+                                       t-att-id="line.tkn_no_id"
+                                       t-model="line.tkn_no"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control"
+                                       t-att-id="line.product_id"
+                                       t-model="line.product"/>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control"
+                                       t-att-id="line.quantity_id"
+                                       t-model="line.quantity"/>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control"
+                                       t-att-id="line.tare_id"
+                                       t-model="line.tare"/>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control"
+                                       t-att-id="line.nett_id"
+                                       t-model="line.nett"/>
+                            </td>
+
+
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+                <button class="btn btn-primary" t-on-click="addrow">+ Add Line</button>
+                <button class="btn btn-secondary" t-on-click="getValues">Get Values</button>
+                <button class="btn btn-success" t-on-click="createPurchaseOrder">Create Purchase Order</button>
+
+
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_odoo_services" model="ir.actions.client">
+            <field name="name">Tea Estate</field>
+            <field name="tag">tea_leaf_purchase_order.OdooServices</field>
+        </record>
+
+         <menuitem name="Tea Estate"
+                  id="main_overall_report"
+                  action="action_odoo_services"
+                  />
+    </data>
+</odoo>

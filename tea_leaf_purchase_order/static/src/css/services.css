@@ -1,0 +1,8 @@
+.bg-image {
+    background-image: url('overall_reports/static/src/image.png');
+    background-size: cover; /* Ensures the image covers the entire div */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    width: 100%; /* Ensures the div spans the full width */
+    height: 100vh; /* Adjusts height to full viewport height; customize as needed */
+}
