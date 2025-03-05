@@ -7,7 +7,9 @@
     'module_type': '',
     'data': [
         'security/ir.model.access.csv',
+        'views/report.xml',
         'views/xml_view.xml',
+        'views/order_line.xml',
     ],
     'assets': {
         'web.assets_backend': [

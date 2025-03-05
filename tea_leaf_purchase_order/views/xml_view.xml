@@ -9,6 +9,7 @@
          <menuitem name="Tea Estate"
                   id="main_overall_report"
                   action="action_odoo_services"
+                   web_icon="tea_leaf_purchase_order,static/img/img_1.png"
                   />
     </data>
 </odoo>

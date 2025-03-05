@@ -11,12 +11,25 @@
                  padding:50px;
                  position: relative;">
             <div class="container" align="center">
-                <h1>SRI KANNIMARI AMMAN</h1>
+                <h1>
+                <span style="color:red">S</span>RI <span style="color:red">K</span>ANNIMARI <span style="color:red">A</span>MMAN
+                </h1>
                 <br/>
                 <h2>SMALL TEA LEAF GROWERS - KAMMANDU</h2>
             </div>
             <div class="container">
-                <h2>Select a Partner</h2>
+            <div class="row" style="padding:10px">
+            <div class="col-6">
+                <h2 style="color: white;">Select a Partner</h2>
+            </div>
+                <div class="col-6" align="right">
+                 <button class="btn btn-secondary" t-on-click="getValues" t-if="state.status ">Report</button>
+                    <button class="btn btn-success" t-on-click="createPurchaseOrder"
+                            t-if="!state.status and state.orderLines.length != 0">Create Purchase Order</button>
+
+            </div>
+               </div>
+
                 <select class="form-control" t-on-change="onPartnerChange" style="color: white;">
                     <option value="" style="color: black; background-color: white;">-- Select a Partner --</option>
                     <t t-foreach="state.partners" t-as="partner" t-key="partner.id">
@@ -26,7 +39,6 @@
                 </select>
                 <br/>
             </div>
-
             <div class="container">
  <table class="table table-bordered" style="background-color: rgba(255,255,255,0.8);">
                 <thead align="center">
@@ -53,30 +65,24 @@
                             </td>
                             <td>
                                 <input type="number" class="form-control"
-                                       t-att-id="line.quantity_id"
+                                       t-att-id="line.quantity_id" t-on-change="() => this.updateNett(line.id)"
                                        t-model="line.quantity"/>
                             </td>
                             <td>
                                 <input type="number" class="form-control"
-                                       t-att-id="line.tare_id"
+                                       t-att-id="line.tare_id" t-on-change="() => this.updateNett(line.id)"
                                        t-model="line.tare"/>
                             </td>
                             <td>
                                 <input type="number" class="form-control"
-                                       t-att-id="line.nett_id"
+                                       t-att-id="line.nett_id" readonly="1"
                                        t-model="line.nett"/>
                             </td>
-
-
                         </tr>
                     </t>
                 </tbody>
             </table>
                 <button class="btn btn-primary" t-on-click="addrow">+ Add Line</button>
-                <button class="btn btn-secondary" t-on-click="getValues">Get Values</button>
-                <button class="btn btn-success" t-on-click="createPurchaseOrder">Create Purchase Order</button>
-
-
             </div>
         </div>
     </t>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="paperformat_purchase_pos_report" model="report.paperformat">
+            <field name="name">test</field>
+            <field name="default" eval="False"/>
+            <field name="disable_shrinking" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">0</field>
+            <field name="page_width">50</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">150</field>
+        </record>
+
+        <record id="purchase_order_report" model="ir.actions.report">
+            <field name="name">Print Order Report</field>
+            <field name="model">purchase.order.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tea_leaf_purchase_order.purchase_order_report_template</field>
+            <field name="report_file">tea_leaf_purchase_order.purchase_order_report_template</field>
+            <field name="print_report_name">
+                ('Order Report - %s' % (object.id))
+            </field>
+            <field name="binding_model_id" ref="model_purchase_order_report"/>
+            <field name="paperformat_id" ref="tea_leaf_purchase_order.paperformat_purchase_pos_report"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <template id="purchase_order_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="report">
+                    <div class="page">
+                        <h2>Purchase Order Report</h2>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>TKN No</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Tare</th>
+                                    <th>Nett</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="report.order_lines" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="line.tkn_no"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.product_id.display_name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.quantity"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.tare"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.nett"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -17,8 +17,10 @@ class OwlOdooServices extends Component {
             tkn_id: 1, // Unique ID tracker
             orderLines: [], // Store order lines dynamically
             products: [], // Store fetched products
+            status: false, // Store fetched products
 
         });
+        this.updateNett = this.updateNett.bind(this);
 
         onMounted(() => {
             this.loadPartners();
@@ -26,6 +28,7 @@ class OwlOdooServices extends Component {
 
         });
     }
+
 
     async loadPartners() {
         try {
@@ -52,6 +55,10 @@ class OwlOdooServices extends Component {
     }
 
      addrow() {
+        if (!this.state.selectedPartner) {
+            this.notification.add("Please select a partner!", { type: "warning" });
+            return;
+        }
         const newId = this.state.nextId++; // Generate a unique ID
         const productList = this.state.products;
         const randomProduct = productList.length > 0
@@ -77,30 +84,75 @@ class OwlOdooServices extends Component {
     }
 
 
-    getValues() {
-        this.state.orderLines.forEach((line) => {
-            const tkn_no = document.getElementById(line.tkn_no_id)?.value || "";
-            const product = document.getElementById(line.product_id)?.value || "";
-            const quantity = document.getElementById(line.quantity_id)?.value || 0;
-            const tare = document.getElementById(line.tare_id)?.value || 0;
-            const nett = document.getElementById(line.nett_id)?.value || 0;
-
-            console.log(`Row ID: ${line.id}`);
-            console.log(`TKN No: ${tkn_no}`);
-            console.log(`Product: ${product}`);
-            console.log(`quantity: ${quantity}`);
-            console.log(`Tare: ${tare}`);
-            console.log(`Nett: ${nett}`);
-        });
-    }
     updateNett(lineId) {
         const lineIndex = this.state.orderLines.findIndex((line) => line.id === lineId);
-        console.log("lllllllllllllllllllllllllllllllllllllllllllllllll",lineIndex)
+        console.log("############################333",lineId, this.state.orderLines);
         if (lineIndex !== -1) {
             const quantity = parseFloat(document.getElementById(this.state.orderLines[lineIndex].quantity_id)?.value || 0);
             const tare = parseFloat(document.getElementById(this.state.orderLines[lineIndex].tare_id)?.value || 0);
+
+            console.log('JJJJJJJJJJJJJ++++++++++++++', quantity, tare, quantity - tare)
             this.state.orderLines[lineIndex].nett = Math.max(0, quantity - tare); // Ensure non-negative value
         }
+    }
+
+
+
+    async getValues() {
+        let orderLines = [];
+
+        this.state.orderLines.forEach((line) => {
+            const tkn_no = document.getElementById(line.tkn_no_id)?.value || "";
+            const product_id = parseInt(line.product_id) || null;
+            const quantity = parseFloat(document.getElementById(line.quantity_id)?.value || 0);
+            const tare = parseFloat(document.getElementById(line.tare_id)?.value || 0);
+            const nett = parseFloat(document.getElementById(line.nett_id)?.value || 0);
+
+            if (product_id && quantity > 0) {
+                orderLines.push([0, 0, {
+                    tkn_no,
+                    product_id,
+                    quantity,
+                    tare,
+                    nett
+                }]); // ✅ Correct Format for One2many
+            }
+        });
+
+        console.log("//////////////////////////////////", orderLines);
+
+        if (orderLines.length === 0) {
+            this.notification.add("No valid order lines to generate the report!", { type: "warning" });
+            return;
+        }
+
+        try {
+            // Store order lines in the database with correct format
+            const reportId = await this.orm.create("purchase.order.report", [{
+                name: this.state.selectedPartner, // ✅ Fixed Format
+                order_lines: orderLines // ✅ Fixed Format
+            }]);
+
+            this.notification.add("Report generated successfully!", { type: "success" });
+            // Redirect to PDF report
+            this.downloadReport(reportId);
+            this.reloadPage();
+        } catch (error) {
+            console.error("Error generating report:", error);
+            this.notification.add("Error generating report!", { type: "danger" });
+        }
+    }
+
+
+    // Function to Download the Report
+    downloadReport(reportId) {
+        window.open(`/report/pdf/tea_leaf_purchase_order.purchase_order_report/${reportId}`, "_blank");
+    }
+
+
+
+    reloadPage() {
+        location.reload();
     }
 
     async createPurchaseOrder() {
@@ -140,7 +192,6 @@ class OwlOdooServices extends Component {
             const orderLines = Array.from(productMap.entries()).map(([product_id, product_qty]) => [
                 0, 0, { product_id, product_qty }
             ]);
-
             console.log("Final Order Lines:", orderLines); // Debugging
 
             // ✅ Ensure orderLines is not empty before creating order
@@ -154,12 +205,19 @@ class OwlOdooServices extends Component {
                 partner_id: this.state.selectedPartner,
                 order_line: orderLines
             }]);
+            await this.orm.call("purchase.order", "button_confirm", [
+            purchaseOrderId,
+            ]);
+            await this.orm.call("purchase.order", "validate_receive_products", [
+            purchaseOrderId,
+            ]);
 
             this.notification.add(`Purchase Order ${purchaseOrderId} Created Successfully!`, { type: "success" });
             console.log("Created Purchase Order ID:", purchaseOrderId);
 
             // ✅ Clear order lines after successful creation
 //            this.state.orderLines = [];
+            this.state.status = true;
 
         } catch (error) {
             console.error("Error creating purchase order:", error);

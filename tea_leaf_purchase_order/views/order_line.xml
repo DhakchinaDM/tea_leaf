@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="month_report_view_tree" model="ir.ui.view">
+            <field name="name">purchase.order.report.tree</field>
+            <field name="model">purchase.order.report</field>
+            <field name="arch" type="xml">
+
+                <tree>
+                    <field name="name"/>
+
+                </tree>
+
+            </field>
+        </record>
+
+        <record id="month_report_view_from" model="ir.ui.view">
+            <field name="name">purchase.order.report.form</field>
+            <field name="model">purchase.order.report</field>
+            <field name="arch" type="xml">
+
+                <form>
+                    <sheet>
+<!--                        <button name="%(action_purchase_order_report)"-->
+<!--                                type="action"-->
+<!--                                string="Click Me"-->
+<!--                                class="btn-primary"/>-->
+                        <field name="name"/>
+                        <notebook>
+                            <page string="Depreciation Board">
+                                <field name="order_lines" mode="tree">
+                                    <tree string="Depreciation Lines">
+                                        <field name="tkn_no"/>
+                                        <field name="product_id"/>
+                                        <field name="quantity"/>
+                                        <field name="tare"/>
+                                        <field name="nett"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+
+            </field>
+        </record>
+
+        <record id="action_month_report_view" model="ir.actions.act_window">
+            <field name="name">report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order.report</field>
+            <field name="domain">[]</field>
+            <field name="view_mode">tree,form</field>
+
+        </record>
+
+        <menuitem name="Reports"
+                  id="main_overall_report_100"
+                  action="action_month_report_view"/>
+
+
+<!--        <record id="action_purchase_order_report" model="ir.actions.server">-->
+<!--            <field name="name">Print Order Report</field>-->
+<!--            <field name="model_id" ref="tea_leaf_purchase_order.model_purchase_order_report"/>-->
+<!--            <field name="state">code</field>-->
+<!--            <field name="code">-->
+<!--                action = self.env.ref('tea_leaf_purchase_order.purchase_order_report').report_action(self)-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <!--        <record id="purchase_order_report_button" model="ir.ui.view">-->
+        <!--            <field name="name">purchase.order.report.button</field>-->
+        <!--            <field name="model">purchase.order</field>-->
+        <!--            <field name="inherit_id" ref="purchase.view_purchase_order_form"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <xpath expr="//form/header" position="inside">-->
+        <!--                    <button name="action_purchase_order_report" type="object" string="Print PDF" class="oe_highlight"/>-->
+        <!--                </xpath>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+    </data>
+
+
+</odoo>

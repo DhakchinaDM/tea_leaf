@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_tea_leaf_order_line,access.tea.leaf.order.line,model_tea_leaf_order_line,,1,1,1,1
+access_purchase_order_report,access.purchase.order.report,model_purchase_order_report,,1,1,1,1
+access_purchase_order_report_line,access.purchase.order.report.line,model_purchase_order_report_line,,1,1,1,1
